@@ -10,7 +10,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  format:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,7 +50,6 @@ jobs:
           - directory: src/bare-metal/microcontrollers/examples
             target: thumbv7em-none-eabihf
           - directory: src/exercises/bare-metal/compass
-            target: thumbv7em-none-eabihf
           - directory: src/exercises/bare-metal/rtc
             target: aarch64-unknown-none
     steps:
@@ -87,7 +85,6 @@ jobs:
         run: |
           import os, json, pathlib
           languages = ["en"] + [p.stem for p in pathlib.Path("po").iterdir() if p.suffix == ".po"]
-          github_output = open(os.environ["GITHUB_OUTPUT"], "a")
           github_output.write("languages=")
           json.dump(sorted(languages), github_output)
 
@@ -111,7 +108,6 @@ jobs:
         if: matrix.language != 'en'
         run: |
           sudo apt update
-          sudo apt install gettext
 
       - name: Install mdbook
         uses: ./.github/workflows/install-mdbook
@@ -130,7 +126,6 @@ jobs:
       - name: Prepare book for upload
         run: |
           mv book/html book/comprehensive-rust-${{ matrix.language }}
-          rm -r book/exerciser
 
       # Upload the book now to retain it in case mdbook test fails.
       - name: Upload book
